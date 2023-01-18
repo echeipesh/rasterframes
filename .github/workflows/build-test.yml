@@ -17,22 +17,18 @@ jobs:
 
     steps:
       - uses: coursier/cache-action@v6
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       - name: Setup JDK
         uses: actions/setup-java@v3
         with:
           distribution: temurin
           java-version: 8
           cache: sbt
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
       # - uses: olafurpg/setup-scala@v13
       #   with:
       #     java-version: adopt@1.11
-      # - name: Set up Python
-      #   uses: actions/setup-python@v2
-      #   with:
-      #     python-version: 3.9.15
       - name: Create PyRasterFrames package
         run: sbt -v -batch pyrasterframes/package
 

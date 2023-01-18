@@ -4,7 +4,7 @@ on:
   pull_request:
     branches: ['**']
   push:
-    branches: ['master', 'develop', 'release/*', 'spark-3.2']
+    branches: ['master', 'develop', 'release/*', 'spark-3.2-python']
     tags: [v*]
   release:
     types: [published]

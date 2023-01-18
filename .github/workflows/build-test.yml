@@ -11,28 +11,35 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-20.04
-    container:
-      image: osgeo/gdal:ubuntu-small-3.1.2
+    runs-on: ubuntu-latest
+    # container:
+    #   image: osgeo/gdal:ubuntu-small-3.1.2
 
     steps:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
-      - uses: coursier/cache-action@v6
-      - uses: olafurpg/setup-scala@v13
+      # - uses: coursier/cache-action@v6
+      - name: Setup JDK
+        uses: actions/setup-java@v3
         with:
-          java-version: adopt@1.11
+          distribution: temurin
+          java-version: 8
+          cache: sbt
+      # - uses: olafurpg/setup-scala@v13
+      #   with:
+      #     java-version: adopt@1.11
+      # - name: Set up Python
+      #   uses: actions/setup-python@v2
+      #   with:
+      #     python-version: 3.9.15
+      - name: Create PyRasterFrames package
+        run: sbt -v -batch pyrasterframes/package
 
-      - name: Set up Python 3.8
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.8
-
-      - name: Install Conda dependencies
-        run: |
-          # $CONDA_DIR is an environment variable pointing to the root of the miniconda directory
-          $CONDA_DIR/bin/conda install -c conda-forge --yes --file pyrasterframes/src/main/python/requirements-condaforge.txt
+      # - name: Install Conda dependencies
+      #   run: |
+      #     # $CONDA_DIR is an environment variable pointing to the root of the miniconda directory
+      #     $CONDA_DIR/bin/conda install -c conda-forge --yes --file pyrasterframes/src/main/python/requirements-condaforge.txt
 
       # Do just the compilation stage to minimize sbt memory footprint
       - name: Compile
@@ -47,8 +54,6 @@ jobs:
       - name: Experimental tests
         run: sbt -batch experimental/test
 
-      - name: Create PyRasterFrames package
-        run: sbt -v -batch pyrasterframes/package
 
       - name: Python tests
         run: sbt -batch pyrasterframes/test

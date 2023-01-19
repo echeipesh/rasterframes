@@ -20,22 +20,13 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
+
       - name: Setup JDK
         uses: actions/setup-java@v3
         with:
           distribution: temurin
           java-version: 8
           cache: sbt
-      # - uses: olafurpg/setup-scala@v13
-      #   with:
-      #     java-version: adopt@1.11
-      - name: Create PyRasterFrames package
-        run: sbt -v -batch pyrasterframes/package
-
-      # - name: Install Conda dependencies
-      #   run: |
-      #     # $CONDA_DIR is an environment variable pointing to the root of the miniconda directory
-      #     $CONDA_DIR/bin/conda install -c conda-forge --yes --file pyrasterframes/src/main/python/requirements-condaforge.txt
 
       # Do just the compilation stage to minimize sbt memory footprint
       - name: Compile
@@ -50,9 +41,15 @@ jobs:
       - name: Experimental tests
         run: sbt -batch experimental/test
 
-
-      - name: Python tests
-        run: sbt -batch pyrasterframes/test
+      ## TODO: Update python build to be PEP 517 compatible
+      # - name: Install Conda dependencies
+      #   run: |
+      #     # $CONDA_DIR is an environment variable pointing to the root of the miniconda directory
+      #     $CONDA_DIR/bin/conda install -c conda-forge --yes --file pyrasterframes/src/main/python/requirements-condaforge.txt
+      # - name: Create PyRasterFrames package
+      #   run: sbt -v -batch pyrasterframes/package
+      # - name: Python tests
+      #   run: sbt -batch pyrasterframes/test
 
       - name: Collect artifacts
         if: ${{ failure() }}
